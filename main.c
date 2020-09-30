@@ -77,21 +77,20 @@ int main(int argc, char* argv[])
 	struct timeval timeout;
 	timeout.tv_sec = 3;
 	timeout.tv_usec = 0;
-	char* if_str;
-	char* dest_ip_str;
-
-
-	if(argc != 3)
-	{
-		printf("Expected 2 parameters. Found %i\n", argc);
-		exit(1);
-	}
+	char* if_str = NULL;
+	char* dest_ip_str = NULL;
 
 	int parsed_option;
 	struct option long_options[] = {
 		{"interface", required_argument, NULL, 'i'},
 		{"timeout", required_argument, NULL, 't'},
 	};
+
+	if(argc < 1 || argc > ((sizeof(long_options) * 2) + 2))
+	{
+		printf("Parameters error. Check usage\n");
+		exit(1);
+	}
 
 	while((parsed_option = getopt_long(argc, argv, "i:t:", long_options, NULL)) != -1){
 		switch(parsed_option){
@@ -101,6 +100,11 @@ int main(int argc, char* argv[])
 	}
 	dest_ip_str = argv[argc - 1];
 
+	if(if_str == NULL)
+	{
+		printf("an interface must be specified\n");
+		exit(1);
+	}
 	if(t < 1)
 	{
 		printf("negative timeout\n");
